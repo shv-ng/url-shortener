@@ -9,8 +9,10 @@ import (
 	"url-shortner/internal/url/repo"
 )
 
+// Repo interface
 var Repo repo.DBRepository
 
+// Generate unique short url of length 8
 func generateShortURL(original_url string, args ...int) string {
 	length := 8
 	if len(args) > 0 {
@@ -21,6 +23,7 @@ func generateShortURL(original_url string, args ...int) string {
 	return fmt.Sprintf("%x", hasher.Sum(nil))[:length]
 }
 
+// Generate short url and insert to database
 func createURL(original_url string) Url {
 	short_url := generateShortURL(original_url)
 	url := Url{
@@ -36,6 +39,7 @@ func createURL(original_url string) Url {
 	return url
 }
 
+// Get short_url form database and return Url struct that contains original_url
 func getURL(short_url string) (Url, error) {
 	var u Url
 	url, err := Repo.GetURL(short_url)

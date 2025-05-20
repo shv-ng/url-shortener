@@ -9,6 +9,7 @@ type PostgresRepo struct {
 	db *sql.DB
 }
 
+// Create table if it doesn't exist
 func createTable(db *sql.DB) error {
 	query := `CREATE TABLE IF NOT EXISTS urldb (
 		id SERIAL PRIMARY KEY,
@@ -23,6 +24,7 @@ func createTable(db *sql.DB) error {
 	return nil
 }
 
+// NewPostgresRepo returns a new instance of PostgresRepo
 func NewPostgresRepo(db *sql.DB) *PostgresRepo {
 	createTable(db)
 	return &PostgresRepo{
@@ -30,6 +32,7 @@ func NewPostgresRepo(db *sql.DB) *PostgresRepo {
 	}
 }
 
+// Insert url data to database
 func (r *PostgresRepo) Save(original_url, short_url string) error {
 	query := `INSERT INTO urldb (original_url, short_url) VALUES ($1, $2)`
 	_, err := r.db.Exec(query, original_url, short_url)
@@ -40,6 +43,7 @@ func (r *PostgresRepo) Save(original_url, short_url string) error {
 	return nil
 }
 
+// Get original url from database
 func (r *PostgresRepo) GetURL(short_url string) (string, error) {
 	query := `SELECT original_url FROM urldb 
 						       WHERE short_url = $1;`

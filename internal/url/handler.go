@@ -8,6 +8,9 @@ import (
 	"net/http"
 )
 
+// Handler for GET /shorturl
+// input: {"url": <original_url>}
+// output: {"short_url": <short_url>}
 func ShortUrlHandler(w http.ResponseWriter, r *http.Request) {
 	var data struct {
 		URL string `json:"url"`
@@ -39,6 +42,9 @@ func ShortUrlHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Handler for GET /<short_url>
+// input: <short_url>
+// output: redirect to <original_url>
 func RedirectUrl(w http.ResponseWriter, r *http.Request) {
 	shortURL := r.URL.Path[1:] // Trim leading slash
 	log.Printf("Redirect requested for: %s", shortURL)
