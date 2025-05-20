@@ -1,0 +1,25 @@
+
+
+services:
+  backend:
+    build: .
+    command: >
+      sh -c "go run cmd/server/main.go"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: urlshortener
+      POSTGRES_USER: urlshortener
+      POSTGRES_PASSWORD: urlshortener
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+volumes:
+  postgres_data:
+
