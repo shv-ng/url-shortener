@@ -4,10 +4,12 @@ import (
 	"crypto/md5"
 	"errors"
 	"fmt"
-	"time"
+	"log"
+
+	"url-shortner/internal/url/repo"
 )
 
-var URLDB = make(map[string]Url)
+var Repo repo.DBRepository
 
 func generateShortURL(original_url string, args ...int) string {
 	length := 8
@@ -20,21 +22,29 @@ func generateShortURL(original_url string, args ...int) string {
 }
 
 func createURL(original_url string) Url {
-	id := generateShortURL(original_url)
+	short_url := generateShortURL(original_url)
 	url := Url{
-		Id:          id,
 		OriginalURL: original_url,
-		ShortURL:    id,
-		CreatedAt:   time.Now(),
+		ShortURL:    short_url,
 	}
-	URLDB[url.Id] = url
+
+	err := Repo.Save(original_url, short_url)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	return url
 }
 
 func getURL(short_url string) (Url, error) {
-	url, ok := URLDB[short_url]
-	if !ok {
+	var u Url
+	url, err := Repo.GetURL(short_url)
+	u = Url{
+		url,
+		short_url,
+	}
+	if err != nil {
 		return Url{}, errors.New("URL not found")
 	}
-	return url, nil
+	return u, nil
 }

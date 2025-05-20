@@ -1,17 +1,29 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
 
 	"url-shortner/internal/url"
+	"url-shortner/internal/url/repo"
+
+	_ "github.com/lib/pq"
 )
 
 func main() {
+	connStr := "user=urlshortener password=urlshortener dbname=urlshortener host=db sslmode=disable"
+
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer db.Close()
+	url.Repo = repo.NewPostgresRepo(db)
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case "/":
-			url.RootUrlHandler(w, r)
 		case "/shorturl":
 			url.ShortUrlHandler(w, r)
 		default:
@@ -20,9 +32,8 @@ func main() {
 	})
 
 	fmt.Println("Server starts at 8000...")
-	err := http.ListenAndServe(":8000", nil)
+	err = http.ListenAndServe(":8000", nil)
 	if err != nil {
-		fmt.Println("Error : ", err)
-		return
+		log.Fatalln(err)
 	}
 }
