@@ -2,8 +2,6 @@ package url
 
 import (
 	"encoding/json"
-	"fmt"
-	"html"
 	"log"
 	"net/http"
 )
