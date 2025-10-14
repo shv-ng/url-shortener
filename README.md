@@ -19,7 +19,7 @@ A simple URL shortener written in Go, using PostgreSQL for storage.
 ### Running the Project
 
 ```bash
-git clone https://github.com/ShivangSrivastava/url-shortener
+git clone https://github.com/shv-ng/url-shortener
 cd url-shortener
 docker-compose up -d
 ```
